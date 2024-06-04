@@ -1,0 +1,62 @@
+-- Soal No 1 --
+SELECT * FROM employees;
+
+-- Soal No 2 --
+SELECT COUNT(*) AS manager_count
+FROM employees
+WHERE job_title = 'Manager';
+
+-- Soal No 3 --
+SELECT name, salary
+FROM employees
+WHERE department = 'Sales'
+OR department = 'Marketing';
+
+-- Soal No 4 --
+SELECT AVG(salary) AS average_salary
+FROM employees
+WHERE joined_date >= DATE(NOW(), INTERVAL 5 YEAR);
+
+-- Soal No 5 --
+SELECT emp.name, emp.employee_id, SUM(s.sales) AS total_sales
+FROM employees emp
+JOIN sales_data s ON e.employee_id = s.employee_id
+GROUP BY e.employee_id, e.name
+ORDER BY total_sales DESC
+LIMIT 5;
+
+-- Soal No 6 -- 
+WITH dept_avg_salary AS (
+    SELECT department, AVG(salary) AS avg_salary
+    FROM employees
+    GROUP BY department
+),
+overall_avg_salary AS (
+    SELECT AVG(salary) AS avg_salary
+    FROM employees
+)
+SELECT emp.name, emp.salary, d.avg_salary
+FROM employees emp
+JOIN dept_avg_salary d ON e.department = d.department
+WHERE d.avg_salary > (SELECT avg_salary FROM overall_avg_salary);
+
+
+-- Soal No 7 -- 
+SELECT emp.name, SUM(s.sales) AS total_sales,
+       RANK() OVER (ORDER BY SUM(s.sales) DESC) AS sales_rank
+FROM employees emp
+JOIN sales_data s ON emp.employee_id = s.employee_id
+GROUP BY emp.employee_id, emp.name
+ORDER BY total_sales DESC;
+
+
+-- Soal No 8 --
+
+CREATE PROCEDURE GetDepartmentEmployees(IN dept_name VARCHAR(255))
+BEGIN
+    SELECT name, SUM(salary) AS total_salary
+    FROM employees
+    WHERE department = dept_name
+    GROUP BY name;
+
+DELIMITER ;
