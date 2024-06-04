@@ -20,8 +20,8 @@ WHERE joined_date >= DATE(NOW(), INTERVAL 5 YEAR);
 -- Soal No 5 --
 SELECT emp.name, emp.employee_id, SUM(s.sales) AS total_sales
 FROM employees emp
-JOIN sales_data s ON e.employee_id = s.employee_id
-GROUP BY e.employee_id, e.name
+JOIN sales_data s ON emp.employee_id = s.employee_id
+GROUP BY emp.employee_id, emp.name
 ORDER BY total_sales DESC
 LIMIT 5;
 
@@ -37,7 +37,7 @@ overall_avg_salary AS (
 )
 SELECT emp.name, emp.salary, d.avg_salary
 FROM employees emp
-JOIN dept_avg_salary d ON e.department = d.department
+JOIN dept_avg_salary d ON emp.department = d.department
 WHERE d.avg_salary > (SELECT avg_salary FROM overall_avg_salary);
 
 
